@@ -7,6 +7,7 @@ local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
+local gears = require("gears")
 local themes_path = gfs.get_themes_dir()
 
 local theme = {}
@@ -41,7 +42,32 @@ theme.border_marked = "#91231c"
 -- prompt_[fg|bg|fg_cursor|bg_cursor|font]
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
 -- Example:
---theme.taglist_bg_focus = "#ff0000"
+
+theme.taglist_bg_focus = "#3333cc"
+theme.taglist_fg_focus = "#ffffff"
+
+theme.taglist_bg_occupied = "#6c8cc9"
+theme.taglist_fg_occupied = "#ffffff"
+
+theme.taglist_fg_empty = "#ffffff"
+theme.taglist_bg_empty = "#848484"
+
+theme.taglist_bg_urgent = "#801a00"
+theme.taglist_fg_urgent = "#e6e6e6"
+
+theme.taglist_shape = gears.shape.octogon -- [sic]
+theme.taglist_shape_border_width = "2"
+theme.taglist_shape_border_color = "#ffff00"
+theme.taglist_shape_border_width_focus = "1"
+theme.taglist_shape_border_color_focus = "#ffff00"
+
+local prompt_bg = "#000000"
+local prompt_fg = "#FFFF00"
+theme.prompt_font = "sans 7 bold"
+theme.prompt_bg = prompt_bg
+theme.prompt_fg = prompt_fg
+theme.prompt_bg_cursor = prompt_fg
+theme.prompt_fg_cursor = prompt_bg
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(4)
