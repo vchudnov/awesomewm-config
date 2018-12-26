@@ -285,6 +285,20 @@ globalkeys = gears.table.join(
         end,
         {description = "go back", group = "client"}),
 
+    -- Rename tag
+    -- https://superuser.com/a/1228715
+    awful.key({ modkey, "Shift",  }, "F2",
+              function ()
+                    awful.prompt.run {
+                      prompt       = "rename current tag: ",
+                      text         = awful.tag.selected().name,
+                      textbox      = awful.screen.focused().mypromptbox.widget,
+                      exe_callback = function (s) awful.tag.selected().name = s end,
+                  }
+            end,
+	      {description = "rename tag", group = "awesome"}),
+    -- TODO: modify the above to change all screens at the same time!
+    
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
