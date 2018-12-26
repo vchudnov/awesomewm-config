@@ -353,23 +353,24 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end,
        {description = "show the menubar", group = "launcher"}),
 
-    -- Move all windows to the left or right
+    -- Move all screens to previus/next tag
     -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
     awful.key({ modkey, "Control"   }, "Left", 
        function()
 	  for i = 1, screen.count() do
 	     awful.tag.viewprev(screen[i])
 	  end
-    end ),
+       end,
+       {description="view previous on all screens", group = "tag"}),
     
     awful.key({ modkey, "Control"   }, "Right", 
        function()
 	  for i = 1, screen.count() do
 	     awful.tag.viewnext(screen[i])
 	  end
-       end 
+       end,
+       {description="view next on all screens", group = "tag"})
     )
-)
 
 clientkeys = gears.table.join(
     awful.key({ modkey,           }, "f",
