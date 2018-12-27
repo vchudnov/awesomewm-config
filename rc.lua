@@ -35,7 +35,7 @@ do
         in_error = true
 
         naughty.notify({ preset = naughty.config.presets.critical,
-                         title = "Oops, an error happened!",
+                         title = "error in AwesomeWM",
                          text = tostring(err) })
         in_error = false
     end)
