@@ -293,16 +293,45 @@ globalkeys = gears.table.join(
 
     -- Rename tag
     -- https://superuser.com/a/1228715
-    awful.key({ modkey, "Shift",  }, "F2",
-              function ()
-                    awful.prompt.run {
-                      prompt       = "rename current tag: ",
-                      text         = awful.tag.selected().name,
-                      textbox      = awful.screen.focused().mypromptbox.widget,
-                      exe_callback = function (s) awful.tag.selected().name = s end,
-                  }
-            end,
-	      {description = "rename tag", group = "awesome"}),
+    -- https://awesomewm.org/doc/api/classes/tag.html#
+    awful.key({ modkey, "Control" }, "F2",
+       function ()
+	  local t = awful.screen.focused().selected_tag
+	  if not t then return end
+	  awful.prompt.run {
+	     prompt       = "(THIS screen) rename current tag: ",
+	     text         = t.name,
+	     textbox      = awful.screen.focused().mypromptbox.widget,
+	     exe_callback = function(new_name)
+		if not new_name or #new_name == 0 then return end		
+		t.name = new_name
+	     end
+	  }
+       end,
+       {description = "rename tag, current screen", group = "tag"}),
+    awful.key({ modkey }, "F2",
+       function ()
+	  local old_t = awful.screen.focused().selected_tag
+	  if not old_t then return end
+	  local old_name = old_t.name
+	  awful.prompt.run {
+	     prompt       = "(ALL screens) rename current tag: ",
+	     text         = old_name,
+	     textbox      = awful.screen.focused().mypromptbox.widget,
+	     exe_callback = function(new_name)
+		if not new_name or #new_name == 0 then return end
+
+		for s in screen do
+		   local t = awful.tag.find_by_name(s, old_name)
+		   if t then
+		      t.name = new_name
+		   end
+		end		
+	     end
+	  }
+       end,
+       {description = "rename tag, all screens", group = "tag"}),    
+   
     -- TODO: modify the above to change all screens at the same time!
     
     -- Standard program
