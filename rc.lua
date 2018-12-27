@@ -220,6 +220,12 @@ awful.screen.connect_for_each_screen(function(s)
         },
         -- s.mytasklist, -- Middle widget
 	s.mypromptbox,
+	-- The following is useful to see the task  list with the maximization indicators
+	--   (see https://stackoverflow.com/a/43940683)
+	-- { layout = wibox.layout.fixed.horizontal,
+	--   s.mytasklist, -- Middle widget
+	--   s.mypromptbox
+	-- },
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
