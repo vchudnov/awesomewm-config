@@ -660,3 +660,15 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+
+
+-- TODO: Fix switching from multiple monitor to single monitor: https://github.com/awesomeWM/awesome/issues/1382 https://github.com/awesomeWM/awesome/issues/2317
+-- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
+-- TODO: Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wm
+-- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
+
+-- Refs:
+-- Clients: https://awesomewm.org/doc/api/classes/client.html
+-- Tag: https://awesomewm.org/doc/api/classes/tag.html#
+-- Screen: https://awesomewm.org/doc/api/classes/screen.html
+-- Task list icons for window state: https://stackoverflow.com/questions/27475104/awesome-wm-what-do-the-icons-of-the-title-bar-mean and https://github.com/awesomeWM/awesome/blob/3cfb577387d52e898455a64344f73409bc6f481b/lib/awful/widget/tasklist.lua#L243
