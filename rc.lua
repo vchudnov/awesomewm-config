@@ -101,16 +101,16 @@ end
 -- {{{ Menu
 -- Create a launcher widget and a main menu
 myawesomemenu = {
-   { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end}
+   { "Hotkeys", function() return false, hotkeys_popup.show_help end},
+   { "Manual", terminal .. " -e man awesome" },
+   { "Edit config", editor_cmd .. " " .. awesome.conffile },
+   { "Restart", awesome.restart },
+   { "Quit", function() awesome.quit() end}
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+mymainmenu = awful.menu({ items = { { "Awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "Debian", debian.menu.Debian_menu.Debian },
-                                    { "open terminal", terminal }
+                                    { "Terminal", terminal }
                                   }
                         })
 
@@ -200,7 +200,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contain an icon indicating which layout we're using.
+    -- Create an imagebox widget which will contain an icon indicating what layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(gears.table.join(
@@ -253,35 +253,35 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 
--- {{{ Key bindings
-globalkeys = gears.table.join(
-    awful.key({ modkey,           }, "F1",      hotkeys_popup.show_help,
-              {description="show help", group="awesome"}),
-    awful.key({ modkey, "Control" }, "Left",   awful.tag.viewprev,
-              {description = "view previous", group = "tag"}),
-    awful.key({ modkey, "Control" }, "Right",  awful.tag.viewnext,
-       {description = "view next", group = "tag"}),
-
     -- Move all screens to previous/next tag
     -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
-    awful.key({ modkey }, "Left", 
-       function()
-	  for i = 1, screen.count() do
-	     awful.tag.viewprev(screen[i])
-	  end
-       end,
-       {description="view previous on all screens", group = "tag"}),
-    
-    awful.key({ modkey }, "Right", 
-       function()
-	  for i = 1, screen.count() do
-	     awful.tag.viewnext(screen[i])
-	  end
-       end,
-       {description="view next on all screens", group = "tag"}),
+function for_all_screens(perform)
+   local current = awful.screen.focused()
+   for i = 1, screen.count() do
+      perform(screen[i])
+   end
+   awful.screen.focus(current)
+   highlight_focused_screen()
+end
 
-    awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
-              {description = "go back", group = "tag"}),
+function view_previous_all_screens()
+   for_all_screens(awful.tag.viewprev)
+end
+
+function view_next_all_screens()
+   for_all_screens(awful.tag.viewnext)
+end
+
+-- {{{ Key bindings
+globalkeys = gears.table.join(
+    awful.key({ modkey,           }, "F1",     hotkeys_popup.show_help,   {description="show help", group="awesome"}),
+    awful.key({ modkey, "Control" }, "Left",   awful.tag.viewprev,        {description = "view previous", group = "tag"}),
+    awful.key({ modkey, "Control" }, "Right",  awful.tag.viewnext,        {description = "view next", group = "tag"}),
+
+    awful.key({ modkey            }, "Left",   view_previous_all_screens, {description="view previous on all screens", group = "tag"}),
+    awful.key({ modkey            }, "Right",  view_next_all_screens,     {description="view next on all screens", group = "tag"}),
+
+    awful.key({ modkey,           }, "Escape", awful.tag.history.restore, {description = "go back", group = "tag"}),
 
     awful.key({ Alt }, "Tab",
         function ()
@@ -295,7 +295,7 @@ globalkeys = gears.table.join(
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ "Super_R",           }, "Tab", function () mymainmenu:show() end,
+    awful.key({ modkey, "Control" }, "Tab", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
     -- Layout manipulation
@@ -303,9 +303,9 @@ globalkeys = gears.table.join(
               {description = "swap with next client by index", group = "client"}),
     awful.key({ modkey, "Shift"   }, "Left", function () awful.client.swap.byidx( -1)    end,
               {description = "swap with previous client by index", group = "client"}),
-    awful.key({ modkey }, "Down", function () awful.screen.focus_relative( 1) end,
+    awful.key({ modkey }, "Down", function () awful.screen.focus_relative( 1); highlight_focused_screen(); end,
               {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey }, "Up", function () awful.screen.focus_relative(-1) end,
+    awful.key({ modkey }, "Up", function () awful.screen.focus_relative(-1); highlight_focused_screen(); end,
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
@@ -695,12 +695,12 @@ end)
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-        and awful.client.focus.filter(c) then
-        client.focus = c
+    and awful.client.focus.filter(c) then
+       client.focus = c
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus; highlight_focused_screen();  end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 

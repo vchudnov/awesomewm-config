@@ -117,7 +117,6 @@ end
 function highlight_focused_screen()
    local fs = awful.screen.focused()
    if not fs then naughty.notify({text="no focused screen?"}) return end
-   naughty.notify({text="focusing"})
    for s in screen do
       if s.index == fs.index then
 	 s.mywibox.bg = beautiful.bg_focus
