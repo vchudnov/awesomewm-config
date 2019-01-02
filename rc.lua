@@ -1,4 +1,4 @@
--- Standard awesome library
+
 local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
@@ -7,7 +7,7 @@ local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
-local naughty = require("naughty")
+
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- Enable hotkeys help widget for VIM and other apps
@@ -58,6 +58,9 @@ editor_cmd = terminal .. " -e " .. editor
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
+
+-- Info on modkeys: https://superuser.com/a/1255946
+Alt="Mod1"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -183,12 +186,17 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+dofile(os.getenv("HOME") .. "/.config/awesome/state.lua")
+
+-- TODO: Would like a notification when screen focus changes so I can change the wibar background
+--       In the meantime, can use this: https://stackoverflow.com/questions/47159096/awesomewm-widget-showing-focused-screen
+
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1:www", "2:lua", "3:plan", "4:gMain", "5:gWorklog", "6", "7", "8", "9:FB" }, s, awful.layout.layouts[1])
+    awful.tag(restore_tags(s,default_tags), s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -252,33 +260,52 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "Left",   awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
     awful.key({ modkey, "Control" }, "Right",  awful.tag.viewnext,
-              {description = "view next", group = "tag"}),
+       {description = "view next", group = "tag"}),
+
+    -- Move all screens to previous/next tag
+    -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
+    awful.key({ modkey }, "Left", 
+       function()
+	  for i = 1, screen.count() do
+	     awful.tag.viewprev(screen[i])
+	  end
+       end,
+       {description="view previous on all screens", group = "tag"}),
+    
+    awful.key({ modkey }, "Right", 
+       function()
+	  for i = 1, screen.count() do
+	     awful.tag.viewnext(screen[i])
+	  end
+       end,
+       {description="view next on all screens", group = "tag"}),
+
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
 
-    awful.key({ modkey,           }, "j",
+    awful.key({ Alt }, "Tab",
         function ()
             awful.client.focus.byidx( 1)
         end,
         {description = "focus next by index", group = "client"}
     ),
-    awful.key({ modkey,           }, "k",
+    awful.key({ Alt, "Shift" }, "Tab",
         function ()
             awful.client.focus.byidx(-1)
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
+    awful.key({ "Super_R",           }, "Tab", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
     -- Layout manipulation
-    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
+    awful.key({ modkey, "Shift"   }, "Right", function () awful.client.swap.byidx(  1)    end,
               {description = "swap with next client by index", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end,
+    awful.key({ modkey, "Shift"   }, "Left", function () awful.client.swap.byidx( -1)    end,
               {description = "swap with previous client by index", group = "client"}),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end,
+    awful.key({ modkey }, "Down", function () awful.screen.focus_relative( 1) end,
               {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,
+    awful.key({ modkey }, "Up", function () awful.screen.focus_relative(-1) end,
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
@@ -291,6 +318,9 @@ globalkeys = gears.table.join(
         end,
         {description = "go back", group = "client"}),
 
+    awful.key({modkey, "Shift" }, "grave", save_tags,
+       {description = "save tags to disk", group = "state"}),
+    
     -- Rename tag
     -- https://superuser.com/a/1228715
     -- https://awesomewm.org/doc/api/classes/tag.html#
@@ -305,10 +335,11 @@ globalkeys = gears.table.join(
 	     exe_callback = function(new_name)
 		if not new_name or #new_name == 0 then return end		
 		t.name = new_name
+		save_tags()
 	     end
 	  }
        end,
-       {description = "rename tag, current screen", group = "tag"}),
+       {description = "rename tag, current screen", group = "state"}),
     awful.key({ modkey }, "F2",
        function ()
 	  local old_t = awful.screen.focused().selected_tag
@@ -326,20 +357,19 @@ globalkeys = gears.table.join(
 		   if t then
 		      t.name = new_name
 		   end
-		end		
+		end
+		save_tags()
 	     end
 	  }
        end,
-       {description = "rename tag, all screens", group = "tag"}),    
-   
-    -- TODO: modify the above to change all screens at the same time!
-    
+       {description = "rename tag, all screens", group = "state"}),    
+       
     -- Standard program
     awful.key({ modkey, "Control" }, "Return", function () awful.spawn(terminal) end,
               {description = "open a terminal", group = "launcher"}),
     awful.key({ modkey, "Control" }, "F5", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
-    awful.key({ modkey, "Control", "Alt", "Shift"   }, "Escape", awesome.quit,
+    awful.key({ modkey, "Control", Alt , "Shift"   }, "Escape", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
     awful.key({ modkey      }, "equal",     function () awful.tag.incmwfact( 0.05)          end,
@@ -378,7 +408,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey },            "Return",     function () awful.screen.focused().mypromptbox:run() end,
               {description = "run prompt", group = "launcher"}),
 
-    awful.key({ modkey }, "x",
+    awful.key({ modkey, Alt }, "Return",
               function ()
                   awful.prompt.run {
                     prompt       = "Run Lua code: ",
@@ -388,28 +418,42 @@ globalkeys = gears.table.join(
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
+    
     -- Menubar
     awful.key({ modkey }, "F4", function() menubar.show() end,
        {description = "show the menubar", group = "launcher"}),
 
-    -- Move all screens to previus/next tag
-    -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
-    awful.key({ modkey }, "Left", 
-       function()
-	  for i = 1, screen.count() do
-	     awful.tag.viewprev(screen[i])
-	  end
-       end,
-       {description="view previous on all screens", group = "tag"}),
-    
-    awful.key({ modkey }, "Right", 
-       function()
-	  for i = 1, screen.count() do
-	     awful.tag.viewnext(screen[i])
-	  end
-       end,
-       {description="view next on all screens", group = "tag"})
-    )
+    -- System
+    awful.key({ modkey }, "Scroll_Lock", function()  lock_screen() end,
+       {description = "lock screen", group = "system"}),
+    awful.key({ modkey, "Control" }, "Scroll_Lock", function()  lock_screen_settings() end,
+       {description = "screen lock settings", group = "system"}),
+    awful.key({ modkey }, "Pause", function()  save_tags(); save_all_clients(); lock_screen(); suspend_system() end,
+       {description = "suspend system", group = "system"}),
+    awful.key({ modkey, "Control" }, "Pause", function()  save_tags(); save_all_clients(); lock_screen(); hybrid_sleep_system() end,
+       {description = "suspend+hibernate system", group = "system"})   
+)
+
+function lock_screen()
+   awful.spawn.easy_async("xscreensaver-command -lock", function(stdout, stderr, reason, exit_code)
+			     -- if exit_code ~= 0 then
+				naughty.notify { title="Could not lock screen", text = stdout, timeout=0 }
+			     -- end
+   end)
+end
+
+function lock_screen_settings()
+   awful.spawn("xscreensaver-demo -prefs")
+end
+
+function suspend_system()
+   awful.spawn("systemctl suspend")
+end
+
+function hybrid_sleep_system()
+   awful.spawn("systemctl hybrid-sleep")
+end
+
 
 clientkeys = gears.table.join(
     awful.key({ modkey }, "F11",
@@ -418,15 +462,15 @@ clientkeys = gears.table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
-    awful.key({ modkey, "Control", "Alt"   }, "Escape",      function (c) c:kill()                         end,
+    awful.key({ modkey, "Control", Alt   }, "Escape",      function (c) c:kill()                         end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
               {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
               {description = "move to master", group = "client"}),
-    awful.key({ modkey,           }, "o",      function (c) c:move_to_screen()               end,
+    awful.key({ modkey, "Control" }, "Down",      function (c) c:move_to_screen()               end,
               {description = "move to screen", group = "client"}),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
+    awful.key({ modkey, "Control" }, "Up",      function (c) c.ontop = not c.ontop            end,
        {description = "toggle keep on top", group = "client"}),
     
     awful.key({ modkey, "Control" }, "F9",
@@ -485,7 +529,7 @@ for i = 1, 9 do
                   end,
                   {description = "(ALL screens) view tag #"..i, group = "tag"}),
         -- Toggle tag display.
-        awful.key({ modkey, "Alt", "Control" }, "#" .. i + 9,
+        awful.key({ modkey, Alt, "Control" }, "#" .. i + 9,
                   function ()
                       local screen = awful.screen.focused()
                       local tag = screen.tags[i]
@@ -494,7 +538,7 @@ for i = 1, 9 do
                       end
                   end,
                   {description = "(THIS screen) toggle tag #" .. i, group = "tag"}),
-        awful.key({ modkey, "Alt" }, "#" .. i + 9,
+        awful.key({ modkey, Alt }, "#" .. i + 9,
                   function ()
                       for s in screen do
 			 local tag = s.tags[i]
@@ -664,11 +708,17 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- TODO: Fix switching from multiple monitor to single monitor: https://github.com/awesomeWM/awesome/issues/1382 https://github.com/awesomeWM/awesome/issues/2317
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
--- TODO: Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wm
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
+-- TODO: Compose keys: https://unix.stackexchange.com/a/39080
 
 -- Refs:
+-- Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wmn `xmodmap -pke`
 -- Clients: https://awesomewm.org/doc/api/classes/client.html
 -- Tag: https://awesomewm.org/doc/api/classes/tag.html#
 -- Screen: https://awesomewm.org/doc/api/classes/screen.html
 -- Task list icons for window state: https://stackoverflow.com/questions/27475104/awesome-wm-what-do-the-icons-of-the-title-bar-mean and https://github.com/awesomeWM/awesome/blob/3cfb577387d52e898455a64344f73409bc6f481b/lib/awful/widget/tasklist.lua#L243
+-- Debugging LUA in command line: https://stackoverflow.com/a/39057120
+--   use awesome-client n=require("naughty")
+-- Info on modkeys: https://superuser.com/a/1255946
+--   run: xmodmap to see mappings
+--   run: xev to see keypress events
