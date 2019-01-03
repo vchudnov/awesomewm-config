@@ -29,14 +29,19 @@ function restore_tags(s)
    return restore_tags_with_defaults(s, default_tags)
 end
 
+-- FIXME: This does not work if the tag file does not already exist
 function restore_tags_with_defaults(s, defaults)
+   if s==nil then return defaults; end
+
    -- TODO: Add a timestamp so we can avoid reloading the file for every screen
    local saved_tags, err = table.load(tag_file)
    if err ~= nil then
       naughty.notify({title="error restoring tags", text=err, timeout=0})
       return
    end
-   if s==nil then return end
+   if saved_tags == nil then
+      return defaults
+   end
    sdata = saved_tags[s.index]
    if sdata == nil then
       return defaults
