@@ -26,6 +26,11 @@ if awesome.startup_errors then
                      text = awesome.startup_errors })
 end
 
+-- Startup
+awful.spawn("setxkbmap -option compose:ralt")  -- compose keys
+awful.spawn("xmodmap -e 'add mod3=Menu'") -- set Menu
+
+
 -- Handle runtime errors after startup
 do
     local in_error = false
@@ -61,6 +66,7 @@ modkey = "Mod4"
 
 -- Info on modkeys: https://superuser.com/a/1255946
 Alt="Mod1"
+MenuKey="Mod3"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -295,7 +301,7 @@ globalkeys = gears.table.join(
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ modkey, "Control" }, "Tab", function () mymainmenu:show() end,
+    awful.key({ MenuKey }, "Tab", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
     -- Layout manipulation
@@ -709,7 +715,6 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- TODO: Fix switching from multiple monitor to single monitor: https://github.com/awesomeWM/awesome/issues/1382 https://github.com/awesomeWM/awesome/issues/2317
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
--- TODO: Compose keys: https://unix.stackexchange.com/a/39080
 
 -- Refs:
 -- Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wmn `xmodmap -pke`
