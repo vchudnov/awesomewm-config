@@ -49,7 +49,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("/home/vchudnov/.config/awesome/theme.lua")
+beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
 --beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
@@ -278,6 +278,30 @@ function view_next_all_screens()
    for_all_screens(awful.tag.viewnext)
 end
 
+
+function lock_screen()
+   naughty.notify({title="screenlock", text="Here", timeout=0})
+   local command = "xsecurelock" -- os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
+   naughty.notify({title="screenlock", text=command, timeout=0})
+   awful.spawn(command, function(stdout, stderr, reason, exit_code)
+			     -- if exit_code ~= 0 then
+				naughty.notify { title="Could not lock screen", text = stdout, timeout=0 }
+			     -- end
+   end)
+end
+
+function lock_screen_settings()
+   awful.spawn("xscreensaver-demo -prefs")
+end
+
+function suspend_system()
+   awful.spawn("systemctl suspend")
+end
+
+function hybrid_sleep_system()
+   awful.spawn("systemctl hybrid-sleep")
+end
+
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     awful.key({ modkey,           }, "F1",     hotkeys_popup.show_help,   {description="show help", group="awesome"}),
@@ -440,25 +464,7 @@ globalkeys = gears.table.join(
        {description = "suspend+hibernate system", group = "system"})   
 )
 
-function lock_screen()
-   awful.spawn.easy_async("xscreensaver-command -lock", function(stdout, stderr, reason, exit_code)
-			     -- if exit_code ~= 0 then
-				naughty.notify { title="Could not lock screen", text = stdout, timeout=0 }
-			     -- end
-   end)
-end
 
-function lock_screen_settings()
-   awful.spawn("xscreensaver-demo -prefs")
-end
-
-function suspend_system()
-   awful.spawn("systemctl suspend")
-end
-
-function hybrid_sleep_system()
-   awful.spawn("systemctl hybrid-sleep")
-end
 
 
 clientkeys = gears.table.join(
@@ -715,6 +721,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- TODO: Fix switching from multiple monitor to single monitor: https://github.com/awesomeWM/awesome/issues/1382 https://github.com/awesomeWM/awesome/issues/2317
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
+-- TODO: Make a key combination to shift focus but not raise (Ctrl-Alt-Tab)
 
 -- Refs:
 -- Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wmn `xmodmap -pke`
@@ -727,3 +734,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Info on modkeys: https://superuser.com/a/1255946
 --   run: xmodmap to see mappings
 --   run: xev to see keypress events
+-- Compose keys: https://unix.stackexchange.com/a/39080
