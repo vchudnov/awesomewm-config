@@ -270,6 +270,12 @@ function for_all_screens(perform)
    highlight_focused_screen()
 end
 
+function mk_all_screens(perform)
+   return function()
+         for_all_screens(perform)
+   end
+end
+
 function view_previous_all_screens()
    for_all_screens(awful.tag.viewprev)
 end
@@ -308,8 +314,8 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "Left",   awful.tag.viewprev,        {description = "view previous", group = "tag"}),
     awful.key({ modkey, "Control" }, "Right",  awful.tag.viewnext,        {description = "view next", group = "tag"}),
 
-    awful.key({ modkey            }, "Left",   view_previous_all_screens, {description="view previous on all screens", group = "tag"}),
-    awful.key({ modkey            }, "Right",  view_next_all_screens,     {description="view next on all screens", group = "tag"}),
+    awful.key({ modkey            }, "Left",   mk_all_screens(awful.tag.viewprev), {description="view previous on all screens", group = "tag"}),
+    awful.key({ modkey            }, "Right",  mk_all_screens(awful.tag.viewnext), {description="view next on all screens", group = "tag"}),
 
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore, {description = "go back", group = "tag"}),
 
