@@ -37,7 +37,7 @@ function restore_tags_with_defaults(s, defaults)
    local saved_tags, err = table.load(tag_file)
    if err ~= nil then
       naughty.notify({title="error restoring tags", text=err, timeout=0})
-      return
+      return defaults
    end
    if saved_tags == nil then
       return defaults

@@ -7,6 +7,7 @@ local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
+local naughty = require("naughty")
 
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
@@ -56,6 +57,7 @@ beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
 terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
+screenlock_cmd = os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -268,6 +270,7 @@ function for_all_screens(perform)
    end
    awful.screen.focus(current)
    highlight_focused_screen()
+   -- TODO: maybe here need to find the active client on this screen and then focus that
 end
 
 function mk_all_screens(perform)
@@ -276,37 +279,29 @@ function mk_all_screens(perform)
    end
 end
 
-function view_previous_all_screens()
-   for_all_screens(awful.tag.viewprev)
+function mk(func, arg)
+   return function()
+      func(arg)
+   end
 end
 
-function view_next_all_screens()
-   for_all_screens(awful.tag.viewnext)
-end
-
-
-function lock_screen()
-   naughty.notify({title="screenlock", text="Here", timeout=0})
-   local command = "xsecurelock" -- os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
-   naughty.notify({title="screenlock", text=command, timeout=0})
-   awful.spawn(command, function(stdout, stderr, reason, exit_code)
-			     -- if exit_code ~= 0 then
-				naughty.notify { title="Could not lock screen", text = stdout, timeout=0 }
-			     -- end
+function spawn_notify(command, title)
+   awful.spawn.easy_async(command, function(stdout, stderr, reason, exit_code)
+                             if exit_code ~= 0 then
+                                naughty.notify({title="Could not invoke "..title, text = stdout, timeout=0 })
+                             end
    end)
 end
 
-function lock_screen_settings()
-   awful.spawn("xscreensaver-demo -prefs")
+function mk_spawn(command, title)
+   return function()
+      spawn_notify(command, title)
+   end
 end
 
-function suspend_system()
-   awful.spawn("systemctl suspend")
-end
-
-function hybrid_sleep_system()
-   awful.spawn("systemctl hybrid-sleep")
-end
+lock_screen = mk_spawn(screenlock_cmd, "Lock Screen")
+suspend_system = mk_spawn("systemctl suspend", "Suspend")
+hybrid_sleep_system = mk_spawn("systemctl hybrid-sleep", "Hybrid Sleep")
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
@@ -319,18 +314,8 @@ globalkeys = gears.table.join(
 
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore, {description = "go back", group = "tag"}),
 
-    awful.key({ Alt }, "Tab",
-        function ()
-            awful.client.focus.byidx( 1)
-        end,
-        {description = "focus next by index", group = "client"}
-    ),
-    awful.key({ Alt, "Shift" }, "Tab",
-        function ()
-            awful.client.focus.byidx(-1)
-        end,
-        {description = "focus previous by index", group = "client"}
-    ),
+    awful.key({ Alt               }, "Tab", mk(awful.client.focus.byidx, 1), {description = "focus next by index", group = "client"}),
+    awful.key({ Alt, "Shift"      }, "Tab", mk(awful.client.focus.byidx, -1), {description = "focus previous by index", group = "client"}),
     awful.key({ MenuKey }, "Tab", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
@@ -401,8 +386,10 @@ globalkeys = gears.table.join(
        {description = "rename tag, all screens", group = "state"}),    
        
     -- Standard program
-    awful.key({ modkey, "Control" }, "Return", function () awful.spawn(terminal) end,
-              {description = "open a terminal", group = "launcher"}),
+    awful.key({ modkey, "Control" }, "Return", mk_spawn(terminal, "Terminal"), {description = "open a terminal", group = "launcher"}),
+    awful.key({modkey}, "w", mk_spawn("google-chrome", "Chrome"), {description = "web browser", group="launcher"}),
+    awful.key({modkey}, "f", mk_spawn("thunar", "Thunar"), {description = "file browser", group="launcher"}),
+
     awful.key({ modkey, "Control" }, "F5", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Control", Alt , "Shift"   }, "Escape", awesome.quit,
@@ -460,10 +447,8 @@ globalkeys = gears.table.join(
        {description = "show the menubar", group = "launcher"}),
 
     -- System
-    awful.key({ modkey }, "Scroll_Lock", function()  lock_screen() end,
-       {description = "lock screen", group = "system"}),
-    awful.key({ modkey, "Control" }, "Scroll_Lock", function()  lock_screen_settings() end,
-       {description = "screen lock settings", group = "system"}),
+    awful.key({ modkey },            "Scroll_Lock", lock_screen, {description = "lock screen", group = "system"}),
+    awful.key({ modkey, "Control" }, "Scroll_Lock", mk_spawn("xscreensaver-demo -prefs", "Lock screen preferences"),       {description = "screen lock settings", group = "system"}),
     awful.key({ modkey }, "Pause", function()  save_tags(); save_all_clients(); lock_screen(); suspend_system() end,
        {description = "suspend system", group = "system"}),
     awful.key({ modkey, "Control" }, "Pause", function()  save_tags(); save_all_clients(); lock_screen(); hybrid_sleep_system() end,
@@ -728,6 +713,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
 -- TODO: Make a key combination to shift focus but not raise (Ctrl-Alt-Tab)
+-- TODO: Make a key combination to mve tags up or down, on one/all screens
 
 -- Refs:
 -- Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wmn `xmodmap -pke`
