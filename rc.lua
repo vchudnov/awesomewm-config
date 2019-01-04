@@ -48,16 +48,21 @@ do
 end
 -- }}}
 
+
 -- {{{ Variable definitions
--- Themes define colours, icons, font and wallpapers.
-beautiful.init(os.getenv("HOME") .. "/.config/awesome/theme.lua")
---beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+home_dir = os.getenv("HOME")
+config_dir = home_dir .. "/.config/awesome"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 screenlock_cmd = os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
+
+
+-- Themes define colours, icons, font and wallpapers.
+beautiful.init(config_dir .. "/theme.lua")
+--beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -194,7 +199,7 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
-dofile(os.getenv("HOME") .. "/.config/awesome/state.lua")
+assert(loadfile(config_dir .. "/state.lua"))({config_dir=config_dir})
 
 -- TODO: Would like a notification when screen focus changes so I can change the wibar background
 --       In the meantime, can use this: https://stackoverflow.com/questions/47159096/awesomewm-widget-showing-focused-screen

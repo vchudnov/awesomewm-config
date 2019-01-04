@@ -3,11 +3,11 @@ local naughty = require("naughty")
 local awful = require("awful")
 local beautiful = require("beautiful")
 
-dofile(os.getenv("HOME") .. "/.config/awesome/table-save.lua")
+dofile(config_dir .. "/table-save.lua")
 
 default_tags = { "1:www", "2:lua", "3:plan", "4:gMain", "5:gWorklog", "6", "7", "8", "9:FB" }
 
-local tag_file = os.getenv("HOME") .. "/.config/awesome/saved.tag.txt"
+local tag_file = config_dir .. "/saved.tag.txt"
 function save_tags()
    naughty.notify({title="START saving tags", text="Here!", timeout=0})
    -- http://www.computercraft.info/forums2/index.php?/topic/10499-luahelp-how-to-save-a-table-to-file/
@@ -64,7 +64,7 @@ function get_all_tags_for_client(c)
    return all_tag_names
 end
 
-local clients_file = os.getenv("HOME") .. "/.config/awesome/saved.clients.txt"
+local clients_file = config_dir .. "/saved.clients.txt"
 function save_all_clients()
    local saved_clients = {}
    for _, c in ipairs(client.get()) do
