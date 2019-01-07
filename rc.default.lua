@@ -607,7 +607,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 
-
+-- TODO NEXT: Make rc.minimal.lua with just shortcuts to restart and lock screen. Make default have an option to switch the rc.lua symlink to rc.minimal and restart awsomewm. Have .minimal switch the symlink back on startup.
 -- TODO: Fix switching from multiple monitor to single monitor: https://github.com/awesomeWM/awesome/issues/1382 https://github.com/awesomeWM/awesome/issues/2317
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
