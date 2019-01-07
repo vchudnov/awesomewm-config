@@ -46,3 +46,13 @@ end
 lock_screen = mk_spawn(screenlock_cmd, "Lock Screen")
 suspend_system = mk_spawn("systemctl suspend", "Suspend")
 hybrid_sleep_system = mk_spawn("systemctl hybrid-sleep", "Hybrid Sleep")
+
+
+quit_with_confirm = function()
+   local confirmation = "zenity --question --no-wrap --title='Quit Session'  --text='Quit AwesomeWM?' --ok-label='Quit' --cancel-label='Return'"
+   awful.spawn.easy_async(confirmation, function(stdout, stderr, reason, exit_code)
+                             if exit_code == 0 then
+				awesome.quit()
+                             end
+   end)
+end
