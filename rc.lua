@@ -185,7 +185,12 @@ local tasklist_buttons = gears.table.join(
                                           end))
 
 local function set_wallpaper(s)
-    -- Wallpaper
+   -- Wallpaper
+   if true then
+      gears.wallpaper.set("#000000")
+      local wallpaper = "/tmp/dark_forest.jpg"  -- http://3.bp.blogspot.com/-ehfHnFSTtiA/T5jXryJRgZI/AAAAAAAACSs/nmnSIyr4RZ4/s1600/dark_forest.jpg
+      gears.wallpaper.maximized(wallpaper, s, true)
+   else
     if beautiful.wallpaper then
         local wallpaper = beautiful.wallpaper
         -- If wallpaper is a function, call it with the screen
@@ -194,6 +199,7 @@ local function set_wallpaper(s)
         end
         gears.wallpaper.maximized(wallpaper, s, true)
     end
+   end
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -732,3 +738,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 --   run: xmodmap to see mappings
 --   run: xev to see keypress events
 -- Compose keys: https://unix.stackexchange.com/a/39080
+-- Tips for awesomewm: https://wiki.archlinux.org/index.php/Awesome#Themes
