@@ -1,0 +1,23 @@
+# systemd service file to lock screen on suspend
+#
+# Instructions:
+#   sudo ln screenlock.service /etc/systemd/system/screenlock.service  # hard-link, not soft-link
+#   systemctl enable screenlock.service
+#
+# adapted from https://wiki.debian.org/ScreenLockingOnSleep
+#
+[Unit]
+Description=lockscreen
+Before=sleep.target
+Before=hibernate.target
+Before=suspend-then-hibernate.target
+
+[Service]
+User=vchudnov
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/xsecurelock
+
+[Install]
+WantedBy=sleep.target
+WantedBy=hibernate.target
+WantedBy=suspend-then-hibernate.target

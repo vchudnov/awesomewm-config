@@ -454,9 +454,9 @@ globalkeys = gears.table.join(
     -- System
     awful.key({ modkey },            "Scroll_Lock", lock_screen, {description = "lock screen", group = "system"}),
     awful.key({ modkey, "Control" }, "Scroll_Lock", mk_spawn("xscreensaver-demo -prefs", "Lock screen preferences"),       {description = "screen lock settings", group = "system"}),
-    awful.key({ modkey }, "Pause", function()  save_tags(); save_all_clients(); lock_screen(); suspend_system() end,
+    awful.key({ modkey }, "Pause", function()  save_tags(); save_all_clients();  suspend_system() end,
        {description = "suspend system", group = "system"}),
-    awful.key({ modkey, "Control" }, "Pause", function()  save_tags(); save_all_clients(); lock_screen(); hybrid_sleep_system() end,
+    awful.key({ modkey, "Control" }, "Pause", function()  save_tags(); save_all_clients(); hybrid_sleep_system() end,
        {description = "suspend+hibernate system", group = "system"})   
 )
 
