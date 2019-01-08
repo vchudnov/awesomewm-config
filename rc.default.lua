@@ -285,7 +285,7 @@ globalkeys = gears.table.join(
        {description = "rename tag, all screens", group = "state"}),    
        
     -- Standard program
-    awful.key({ modkey, "Control" }, "Return", mk_spawn(terminal, "Terminal"), {description = "open a terminal", group = "launcher"}),
+    awful.key({modkey}, "t", mk_spawn(terminal, "Terminal"), {description = "terminal", group = "launcher"}),
     awful.key({modkey}, "w", mk_spawn("google-chrome", "Chrome"), {description = "web browser", group="launcher"}),
     awful.key({modkey}, "f", mk_spawn("thunar", "Thunar"), {description = "file browser", group="launcher"}),
 
