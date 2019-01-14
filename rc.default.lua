@@ -188,6 +188,59 @@ local tasklist_buttons = gears.table.join(
 --       In the meantime, can use this: https://stackoverflow.com/questions/47159096/awesomewm-widget-showing-focused-screen
 
 
+function connect_screen(s)
+    -- Wallpaper
+    set_wallpaper(s)
+
+    -- Each screen has its own tag table.
+    awful.tag(restore_tags(s,default_tags), s, awful.layout.layouts[1])
+
+    -- Create a promptbox for each screen
+    s.mypromptbox = awful.widget.prompt()
+    -- Create an imagebox widget which will contain an icon indicating what layout we're using.
+    -- We need one layoutbox per screen.
+    s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox:buttons(gears.table.join(
+                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
+                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+    -- Create a taglist widget
+    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+
+    -- Create a tasklist widget
+    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+
+    -- Create the wibox
+    s.mywibox = awful.wibar({ position = "top", screen = s })
+
+    -- Add widgets to the wibox
+    s.mywibox:setup {
+        layout = wibox.layout.align.horizontal,
+        { -- Left widgets
+            layout = wibox.layout.fixed.horizontal,
+            mylauncher,
+            s.mytaglist,
+            -- s.mypromptbox,
+        },
+        -- s.mytasklist, -- Middle widget
+	s.mypromptbox,
+	-- The following is useful to see the task  list with the maximization indicators
+	--   (see https://stackoverflow.com/a/43940683)
+	-- { layout = wibox.layout.fixed.horizontal,
+	--   s.mytasklist, -- Middle widget
+	--   s.mypromptbox
+	-- },
+        { -- Right widgets
+            layout = wibox.layout.fixed.horizontal,
+            mykeyboardlayout,
+            wibox.widget.systray(),
+            mytextclock,
+            s.mylayoutbox,
+        },
+    }
+end
+
 
 awful.screen.connect_for_each_screen(connect_screen)
 -- }}}
@@ -413,21 +466,33 @@ for i = 1, 9 do
         -- View tag only.
         awful.key({ modkey, "Control" }, "#" .. i + 9,
                   function ()
-                        local screen = awful.screen.focused()
-                        local tag = screen.tags[i]
-                        if tag then
-                           tag:view_only()
-                        end
+		     local tag = screen.tags[i]
+		     if tag then
+			tag:view_only()
+		     end
                   end,
                   {description = "(THIS screen) view tag #"..i, group = "tag"}),
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
-                        for s in screen do
-			   local tag = s.tags[i]
-			   if tag then
-			      tag:view_only()
-			   end
+		     -- local focused_screen = awful.screen.focused({client=true, mouse=false})
+		     local focused_screen = awful.screen.focused()
+		     for s in screen do
+			local tag = s.tags[i]
+			if tag then
+			   tag:view_only()
 			end
+		     end
+		     if focused_screen == nil then
+			return
+		     end
+		     awful.screen.focus(focused_screen)
+		     if false then  -- the next line errors
+			for c in focused_screen.clients do
+			   client.focus=c
+			   c:raise()
+			   break
+			end
+		     end
                   end,
                   {description = "(ALL screens) view tag #"..i, group = "tag"}),
         -- Toggle tag display.
@@ -617,7 +682,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
 -- TODO: Make a key combination to shift focus but not raise (Ctrl-Alt-Tab)
--- TODO: Make a key combination to mve tags up or down, on one/all screens
+-- TODO: Make a key combination to move tags up or down, on one/all screens
 
 -- Refs:
 -- Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wmn `xmodmap -pke`

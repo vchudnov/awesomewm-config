@@ -61,7 +61,7 @@ end
 
 assert(loadfile(config_dir .. "/state.lua"))({config_dir=config_dir})
 
-local function set_wallpaper(s)
+function set_wallpaper(s)
    -- Wallpaper
    if true then
       gears.wallpaper.set("#000000")
@@ -82,55 +82,3 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
-function connect_screen(s)
-    -- Wallpaper
-    set_wallpaper(s)
-
-    -- Each screen has its own tag table.
-    awful.tag(restore_tags(s,default_tags), s, awful.layout.layouts[1])
-
-    -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contain an icon indicating what layout we're using.
-    -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
-                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
-
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
-
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
-
-    -- Add widgets to the wibox
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-            s.mytaglist,
-            -- s.mypromptbox,
-        },
-        -- s.mytasklist, -- Middle widget
-	s.mypromptbox,
-	-- The following is useful to see the task  list with the maximization indicators
-	--   (see https://stackoverflow.com/a/43940683)
-	-- { layout = wibox.layout.fixed.horizontal,
-	--   s.mytasklist, -- Middle widget
-	--   s.mypromptbox
-	-- },
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
-            wibox.widget.systray(),
-            mytextclock,
-            s.mylayoutbox,
-        },
-    }
-end
