@@ -7,6 +7,7 @@ terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 screenlock_cmd = os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
+bash_cmd = os.getenv("SHELL") or "/bin/bash"
 
 -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
 function for_all_screens(perform)

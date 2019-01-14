@@ -380,19 +380,42 @@ globalkeys = gears.table.join(
               {description = "restore minimized", group = "client"}),
 
     -- Prompt
-    awful.key({ modkey },            "Return",     function () awful.screen.focused().mypromptbox:run() end,
+    awful.key({ modkey, "Control" },            "Return",
+       function () awful.screen.focused().mypromptbox:run() end,
               {description = "run prompt", group = "launcher"}),
 
+    awful.key({ modkey }, "Return",
+       function ()
+	  awful.prompt.run {
+	     prompt       = "Run via " .. bash_cmd .. ": ",
+	     textbox      = awful.screen.focused().mypromptbox.widget,
+	     exe_callback = function(cmd) awful.spawn(bash_cmd .. " -i +O expand_aliases -c " .. cmd) end,
+	     history_path = awful.util.get_cache_dir() .. "/history_eval"
+	  }
+       end,
+       {description = "run-through-shell prompt", group = "awesome"}),
+
     awful.key({ modkey, Alt }, "Return",
-              function ()
-                  awful.prompt.run {
-                    prompt       = "Run Lua code: ",
-                    textbox      = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
-                  }
-              end,
-              {description = "lua execute prompt", group = "awesome"}),
+       function ()
+	  awful.prompt.run {
+	     prompt       = "Run in terminal: ",
+	     textbox      = awful.screen.focused().mypromptbox.widget,
+	     exe_callback = function(cmd) awful.spawn(terminal .. " -e \"" .. cmd .. " ; read -rsp $'Press any key to close...\n' -n1 key \"") end,
+	     history_path = awful.util.get_cache_dir() .. "/history_eval"
+	  }
+       end,
+       {description = "run-in-terminal prompt", group = "awesome"}),
+
+    awful.key({ modkey, Alt, "Control" }, "Return",
+       function ()
+	  awful.prompt.run {
+	     prompt       = "Run Lua code: ",
+	     textbox      = awful.screen.focused().mypromptbox.widget,
+	     exe_callback = awful.util.eval,
+	     history_path = awful.util.get_cache_dir() .. "/history_eval"
+	  }
+       end,
+       {description = "lua execute prompt", group = "awesome"}),
     
     -- Menubar
     awful.key({ modkey }, "F4", function() menubar.show() end,
@@ -673,7 +696,8 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 
 -- TODO NEXT: Make rc.minimal.lua with just shortcuts to restart and lock screen. Make default have an option to switch the rc.lua symlink to rc.minimal and restart awsomewm. Have .minimal switch the symlink back on startup.
--- TODO: Make spawn_shell(command, shell=None) to be able to get env variable before executing a command
+-- TODO: save clients in tags by workspace name rather than number; ANDOR be able to laod a set of workspaces
+-- TODO: <s-Enter>: run command, <s-c-Enter> run command in terminal
 -- TODO: Install volume and brightness widgets/shortcuts
 --   all widgets: http://pavelmakhov.com/awesome-wm-widgets/#tabVolumebar_Widget
 --   volume keys: https://awesomewm.org/awesome-www-backup-old/wiki/Volume_control_and_display.html
