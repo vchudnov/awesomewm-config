@@ -400,7 +400,7 @@ globalkeys = gears.table.join(
 	  awful.prompt.run {
 	     prompt       = "Run in terminal: ",
 	     textbox      = awful.screen.focused().mypromptbox.widget,
-	     exe_callback = function(cmd) awful.spawn(terminal .. " -e \"" .. cmd .. " ; read -rsp $'Press any key to close...\n' -n1 key \"") end,
+	     exe_callback = function(cmd) awful.spawn(terminal .. " -e " .. bash_cmd .. " -i +O expand_aliases -c \"" .. cmd .. " ; read -rsp $'\\n\\e[48;5;020m\\e[38;5;255mPress any key to close...\n' -n1 key ;  \"") end,
 	     history_path = awful.util.get_cache_dir() .. "/history_eval"
 	  }
        end,
@@ -697,7 +697,6 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- TODO NEXT: Make rc.minimal.lua with just shortcuts to restart and lock screen. Make default have an option to switch the rc.lua symlink to rc.minimal and restart awsomewm. Have .minimal switch the symlink back on startup.
 -- TODO: save clients in tags by workspace name rather than number; ANDOR be able to laod a set of workspaces
--- TODO: <s-Enter>: run command, <s-c-Enter> run command in terminal
 -- TODO: Install volume and brightness widgets/shortcuts
 --   all widgets: http://pavelmakhov.com/awesome-wm-widgets/#tabVolumebar_Widget
 --   volume keys: https://awesomewm.org/awesome-www-backup-old/wiki/Volume_control_and_display.html
