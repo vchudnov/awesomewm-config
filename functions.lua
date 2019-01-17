@@ -7,6 +7,7 @@ terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 screenlock_cmd = os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
+screenlock_shell = "${SCREEN_LOCK_CMD:-xsecurelock}" -- to be run via the shell 
 bash_cmd = os.getenv("SHELL") or "/bin/bash"
 
 -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
@@ -46,7 +47,11 @@ function mk_spawn(command, title)
    end
 end
 
-lock_screen = mk_spawn(screenlock_cmd, "Lock Screen")
+function in_shell(cmd)
+   return bash_cmd .. " -i +O expand_aliases -c " .. cmd
+end
+
+lock_screen = mk_spawn(in_shell(screenlock_shell, "Lock Screen"))
 suspend_system = mk_spawn("systemctl suspend", "Suspend")
 hybrid_sleep_system = mk_spawn("systemctl hybrid-sleep", "Hybrid Sleep")
 

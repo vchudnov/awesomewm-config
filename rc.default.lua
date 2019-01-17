@@ -389,7 +389,7 @@ globalkeys = gears.table.join(
 	  awful.prompt.run {
 	     prompt       = "Run via " .. bash_cmd .. ": ",
 	     textbox      = awful.screen.focused().mypromptbox.widget,
-	     exe_callback = function(cmd) awful.spawn(bash_cmd .. " -i +O expand_aliases -c " .. cmd) end,
+	     exe_callback = function(cmd) awful.spawn(in_shell(cmd)) end,
 	     history_path = awful.util.get_cache_dir() .. "/history_eval"
 	  }
        end,
@@ -400,7 +400,11 @@ globalkeys = gears.table.join(
 	  awful.prompt.run {
 	     prompt       = "Run in terminal: ",
 	     textbox      = awful.screen.focused().mypromptbox.widget,
-	     exe_callback = function(cmd) awful.spawn(terminal .. " -e " .. bash_cmd .. " -i +O expand_aliases -c \"" .. cmd .. " ; read -rsp $'\\n\\e[48;5;020m\\e[38;5;255mPress any key to close...\n' -n1 key ;  \"") end,
+	     exe_callback = function(cmd) awful.spawn(
+		   terminal .. " -e " ..
+		      in_shell("\"" .. cmd ..
+				  " ; read -rsp $'\\n\\e[48;5;020m\\e[38;5;255mPress any key to close...\n' -n1 key ;  \""))
+	     end,
 	     history_path = awful.util.get_cache_dir() .. "/history_eval"
 	  }
        end,
@@ -422,8 +426,9 @@ globalkeys = gears.table.join(
        {description = "show the menubar", group = "launcher"}),
 
     -- System
-    awful.key({ modkey },            "Scroll_Lock", lock_screen, {description = "lock screen", group = "system"}),
-    awful.key({ modkey, "Control" }, "Scroll_Lock", mk_spawn("xscreensaver-demo -prefs", "Lock screen preferences"),       {description = "screen lock settings", group = "system"}),
+    awful.key({ modkey },      "Scroll_Lock", lock_screen, {description = "lock screen", group = "system"}),
+    awful.key({ modkey, Alt }, "l", lock_screen, {description = "lock screen", group = "system"}),
+    -- awful.key({ modkey, "Control" }, "Scroll_Lock", mk_spawn("xscreensaver-demo -prefs", "Lock screen preferences"),       {description = "screen lock settings", group = "system"}),
     awful.key({ modkey }, "Pause", function()  save_tags(); save_all_clients();  suspend_system() end,
        {description = "suspend system", group = "system"}),
     awful.key({ modkey, "Control" }, "Pause", function()  save_tags(); save_all_clients(); hybrid_sleep_system() end,
