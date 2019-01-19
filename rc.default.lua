@@ -30,7 +30,8 @@ end
 -- Startup
 awful.spawn("setxkbmap -option compose:ralt")  -- compose keys
 awful.spawn("xmodmap -e 'add mod3=Menu'") -- set Menu
-
+awful.spawn("xfce4-power-manager") -- https://askubuntu.com/a/951194  -- for laptop light
+-- TODO: Do we need to add gnome-do here?
 
 -- Handle runtime errors after startup
 do
@@ -702,10 +703,18 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- TODO NEXT: Make rc.minimal.lua with just shortcuts to restart and lock screen. Make default have an option to switch the rc.lua symlink to rc.minimal and restart awsomewm. Have .minimal switch the symlink back on startup.
 -- TODO: save clients in tags by workspace name rather than number; ANDOR be able to laod a set of workspaces
+-- TODO: volume:
+--   -- the control widget is man pavucontrol
 -- TODO: Install volume and brightness widgets/shortcuts
 --   all widgets: http://pavelmakhov.com/awesome-wm-widgets/#tabVolumebar_Widget
 --   volume keys: https://awesomewm.org/awesome-www-backup-old/wiki/Volume_control_and_display.html
---   brightness: see man xfpm-power-backlight-helper 
+-- brightness:
+--   did the interactive control up top
+--   redshift has brightness option http://jonls.dk/redshift/
+--   xrandr can help, but only at software level: https://askubuntu.com/a/149264
+--   for dekstops vs laptops?: https://askubuntu.com/a/149062
+--   another solution https://askubuntu.com/a/743967
+--   more info on xbacklight
 -- TODO: Fix switching from multiple monitor to single monitor: https://github.com/awesomeWM/awesome/issues/1382 https://github.com/awesomeWM/awesome/issues/2317
 -- TODO: Auto-hide panel: https://stackoverflow.com/questions/43240234/awesome-wm-panel-autohide-wont-work
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
