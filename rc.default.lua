@@ -703,12 +703,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- TODO NEXT: Make rc.minimal.lua with just shortcuts to restart and lock screen. Make default have an option to switch the rc.lua symlink to rc.minimal and restart awsomewm. Have .minimal switch the symlink back on startup.
 -- TODO: save clients in tags by workspace name rather than number; ANDOR be able to laod a set of workspaces
--- TODO: volume:
---   -- the control widget is man pavucontrol
 -- TODO: Install volume and brightness widgets/shortcuts
 --   all widgets: http://pavelmakhov.com/awesome-wm-widgets/#tabVolumebar_Widget
 --   volume keys: https://awesomewm.org/awesome-www-backup-old/wiki/Volume_control_and_display.html
--- brightness:
+-- TODO: brightness:
 --   did the interactive control up top
 --   redshift has brightness option http://jonls.dk/redshift/
 --   xrandr can help, but only at software level: https://askubuntu.com/a/149264
@@ -727,6 +725,10 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- Tag: https://awesomewm.org/doc/api/classes/tag.html#
 -- Screen: https://awesomewm.org/doc/api/classes/screen.html
 -- Task list icons for window state: https://stackoverflow.com/questions/27475104/awesome-wm-what-do-the-icons-of-the-title-bar-mean and https://github.com/awesomeWM/awesome/blob/3cfb577387d52e898455a64344f73409bc6f481b/lib/awful/widget/tasklist.lua#L243
+-- Volume:
+--  the control widget is pavucontrol
+--  command-line: pactl -- set-sink-volume 0 +10% http://blog.chapagain.com.np/ubuntu-linux-increase-decrease-volume-from-command-line-keyboard-shortcut/
+
 -- Debugging LUA in command line: https://stackoverflow.com/a/39057120
 --   use awesome-client n=require("naughty")
 -- Info on modkeys: https://superuser.com/a/1255946
