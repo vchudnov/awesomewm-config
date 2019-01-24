@@ -31,6 +31,11 @@ theme.border_normal = "#000000"
 theme.border_focus  = "#535d6c"
 theme.border_marked = "#91231c"
 
+theme.titlebar_bg_focus = "#6c8cc9"
+theme.titlebar_fg_focus = "#ffffff"
+theme.titlebar_bg_urgent = "#6c8cc9"
+theme.titlebar_fg_urgent = "#ffffff"
+
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
