@@ -259,8 +259,8 @@ root.buttons(gears.table.join(
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     awful.key({ modkey,           }, "F1",     hotkeys_popup.show_help,   {description="show help", group="awesome"}),
-    awful.key({ modkey, "Control" }, "Left",   awful.tag.viewprev,        {description = "view previous", group = "tag"}),
-    awful.key({ modkey, "Control" }, "Right",  awful.tag.viewnext,        {description = "view next", group = "tag"}),
+    awful.key({ modkey, Alt }, "Left",   awful.tag.viewprev,        {description = "view previous", group = "tag"}),
+    awful.key({ modkey, Alt }, "Right",  awful.tag.viewnext,        {description = "view next", group = "tag"}),
 
     awful.key({ modkey            }, "Left",   mk_all_screens(awful.tag.viewprev), {description="view previous on all screens", group = "tag"}),
     awful.key({ modkey            }, "Right",  mk_all_screens(awful.tag.viewnext), {description="view next on all screens", group = "tag"}),
@@ -271,6 +271,21 @@ globalkeys = gears.table.join(
     awful.key({ Alt, "Shift"      }, "Tab", mk(awful.client.focus.byidx, -1), {description = "focus previous by index", group = "client"}),
     awful.key({ MenuKey }, "Tab", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
+
+    -- Focus
+    -- ref: https://bbs.archlinux.org/viewtopic.php?pid=1003228#p1003228
+    awful.key({ modkey, "Shift" }, "Down", function () awful.client.focus.bydirection("down")
+        if client.focus then client.focus:raise() end
+    end),
+    awful.key({ modkey, "Shift" }, "Up", function () awful.client.focus.bydirection("up")
+        if client.focus then client.focus:raise() end
+    end),
+    awful.key({ modkey, "Shift" }, "Left", function () awful.client.focus.bydirection("left")
+        if client.focus then client.focus:raise() end
+    end),
+    awful.key({ modkey, "Shift" }, "Right", function () awful.client.focus.bydirection("right")
+        if client.focus then client.focus:raise() end
+    end),    
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "Right", function () awful.client.swap.byidx(  1)    end,
