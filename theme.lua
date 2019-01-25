@@ -36,6 +36,9 @@ theme.titlebar_fg_focus = "#ffffff"
 theme.titlebar_bg_urgent = "#6c8cc9"
 theme.titlebar_fg_urgent = "#ffffff"
 
+theme.hotkeys_fg = "#ffffff"
+theme.hotkeys_modifiers_fg = theme.hotkeys_fg
+
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
