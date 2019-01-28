@@ -529,10 +529,10 @@ for i = 1, 9 do
 		     if focused_screen == nil then
 			return
 		     end
-		     awful.screen.focus(focused_screen)
-		     if false then  -- the next line errors
-			for c in focused_screen.clients do
-			   client.focus=c
+		     awful.screen.focus(focused_screen.index)
+		     if true then  -- the next line errors
+			for _, c in ipairs(focused_screen:get_clients()) do
+			   client.focus = c
 			   c:raise()
 			   break
 			end
