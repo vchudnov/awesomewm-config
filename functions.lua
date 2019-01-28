@@ -47,8 +47,9 @@ function mk_spawn(command, title)
    end
 end
 
+-- need unquoted to work for run in terminal
 function in_shell(cmd)
-   return bash_cmd .. " -i +O expand_aliases -c \"" .. cmd .. "\""
+   return bash_cmd .. " -i +O expand_aliases -c " .. cmd
 end
 
 lock_screen = mk_spawn(in_shell(screenlock_shell, "Lock Screen"))
