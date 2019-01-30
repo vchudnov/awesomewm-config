@@ -258,6 +258,7 @@ root.buttons(gears.table.join(
     -- 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
+   awful.key({ modkey, Alt, "Shift", "Control" }, "F12",     restarter_with("rc.minimal.lua"),   {description="switch to minimal configuration", group="awesome"}),
     awful.key({ modkey,           }, "F1",     hotkeys_popup.show_help,   {description="show help", group="awesome"}),
     awful.key({ modkey, Alt }, "Left",   awful.tag.viewprev,        {description = "view previous", group = "tag"}),
     awful.key({ modkey, Alt }, "Right",  awful.tag.viewnext,        {description = "view next", group = "tag"}),

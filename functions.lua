@@ -89,3 +89,16 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+function change_rc(new_file)
+   local config_link = config_dir .. "/rc.lua"
+   os.remove(config_link)
+   os.execute("ln -s " .. new_file .. " " .. config_link)
+end
+
+function restarter_with(dst)
+   return function()
+      change_rc(dst)
+      awesome.restart()
+   end
+end
+
