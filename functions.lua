@@ -21,6 +21,12 @@ function for_all_screens(perform)
    -- TODO: maybe here need to find the active client on this screen and then focus that
 end
 
+-- direction should be one of "up", "down", "left", "right"
+function move_focus(direction)
+   awful.client.focus.bydirection(direction)
+   if client.focus then client.focus:raise() end
+end
+
 function mk_all_screens(perform)
    return function()
          for_all_screens(perform)

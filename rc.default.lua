@@ -268,31 +268,23 @@ globalkeys = gears.table.join(
 
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore, {description = "go back", group = "tag"}),
 
-    awful.key({ Alt               }, "Tab", mk(awful.client.focus.byidx, 1), {description = "focus next by index", group = "client"}),
-    awful.key({ Alt, "Shift"      }, "Tab", mk(awful.client.focus.byidx, -1), {description = "focus previous by index", group = "client"}),
+    awful.key({ Alt               }, "Tab", mk(awful.client.focus.byidx, 1), {description = "focus next by index", group = "focus"}),
+    awful.key({ Alt, "Shift"      }, "Tab", mk(awful.client.focus.byidx, -1), {description = "focus previous by index", group = "focus"}),
     awful.key({ MenuKey }, "Tab", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
     -- Focus
     -- ref: https://bbs.archlinux.org/viewtopic.php?pid=1003228#p1003228
-    awful.key({ modkey, "Shift" }, "Down", function () awful.client.focus.bydirection("down")
-        if client.focus then client.focus:raise() end
-    end),
-    awful.key({ modkey, "Shift" }, "Up", function () awful.client.focus.bydirection("up")
-        if client.focus then client.focus:raise() end
-    end),
-    awful.key({ modkey, "Shift" }, "Left", function () awful.client.focus.bydirection("left")
-        if client.focus then client.focus:raise() end
-    end),
-    awful.key({ modkey, "Shift" }, "Right", function () awful.client.focus.bydirection("right")
-        if client.focus then client.focus:raise() end
-    end),    
+    awful.key({ modkey, "Shift" }, "Down", mk(move_focus,"down"),   {description = "focus window below", group = "focus"}),
+    awful.key({ modkey, "Shift" }, "Up", mk(move_focus,"up"),       {description = "focus window above", group = "focus"}),
+    awful.key({ modkey, "Shift" }, "Left", mk(move_focus,"left"),   {description = "focus window to the left", group = "focus"}),
+    awful.key({ modkey, "Shift" }, "Right", mk(move_focus,"right"), {description = "focus window to the right", group = "focus"}),
 
     -- Layout manipulation
-    awful.key({ modkey, "Shift"   }, "Right", function () awful.client.swap.byidx(  1)    end,
-              {description = "swap with next client by index", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "Left", function () awful.client.swap.byidx( -1)    end,
-              {description = "swap with previous client by index", group = "client"}),
+    awful.key({ modkey, "Control"   }, "Right", function () awful.client.swap.byidx(  1)    end,
+              {description = "swap with next client by index", group = "layout"}),
+    awful.key({ modkey, "Control"   }, "Left", function () awful.client.swap.byidx( -1)    end,
+              {description = "swap with previous client by index", group = "layout"}),
     awful.key({ modkey }, "Down", function () awful.screen.focus_relative( 1); highlight_focused_screen(); end,
               {description = "focus the next screen", group = "screen"}),
     awful.key({ modkey }, "Up", function () awful.screen.focus_relative(-1); highlight_focused_screen(); end,
@@ -467,7 +459,7 @@ clientkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
               {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
-              {description = "move to master", group = "client"}),
+              {description = "move to master", group = "layout"}),
     awful.key({ modkey, "Control" }, "Down",      function (c) c:move_to_screen()               end,
               {description = "move to screen", group = "client"}),
     awful.key({ modkey, "Control" }, "Up",      function (c) c.ontop = not c.ontop            end,
