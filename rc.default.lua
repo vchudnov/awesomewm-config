@@ -280,6 +280,10 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "Left", mk(move_focus,"left"),   {description = "focus window to the left", group = "focus"}),
     awful.key({ modkey, "Shift" }, "Right", mk(move_focus,"right"), {description = "focus window to the right", group = "focus"}),
 
+    -- Choosing clients
+    awful.key({ modkey,         }, "Tab", screen_to_client_menu,    {description = "menu to switch to any client",  group = "focus"}),
+    awful.key({ modkey, "Shift" }, "Tab", client_to_screen_menu, {description = "menu to bring here any client", group = "focus"}),
+
     -- Layout manipulation
     awful.key({ modkey, "Control"   }, "Right", function () awful.client.swap.byidx(  1)    end,
               {description = "swap with next client by index", group = "layout"}),
@@ -291,7 +295,7 @@ globalkeys = gears.table.join(
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
-    awful.key({ modkey,           }, "Tab",
+    awful.key({ modkey, "Control" }, "Tab",
         function ()
             awful.client.focus.history.previous()
             if client.focus then

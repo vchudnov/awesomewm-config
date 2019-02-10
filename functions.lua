@@ -2,6 +2,7 @@ local gears = require("gears")
 local awful = require("awful")
 local naughty = require("naughty")
 local wibox = require("wibox")
+local xresources = require("beautiful.xresources")
 
 terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
@@ -108,3 +109,24 @@ function restarter_with(dst)
    end
 end
 
+local dpi = xresources.apply_dpi
+
+function client_to_screen_menu()
+   terms = {}
+   for i, c in pairs(client.get()) do
+      terms [i] =
+	 {c.name,
+	  function()
+	     local screen = awful.screen.focused()
+	     c:move_to_tag(screen.selected_tag)
+	     c.minimized = false
+	  end,
+	 c.icon}
+   end
+   awful.menu({items = terms,
+	       theme = { width = dpi(300) }}):show()
+end
+
+function screen_to_client_menu()
+   awful.menu.clients({theme = { width = dpi(300) }})
+end
