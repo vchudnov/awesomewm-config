@@ -118,8 +118,10 @@ function client_to_screen_menu()
 	 {c.name,
 	  function()
 	     local screen = awful.screen.focused()
+	     c:move_to_screen(screen)
 	     c:move_to_tag(screen.selected_tag)
 	     c.minimized = false
+	     awful.placement.no_offscreen(c)
 	  end,
 	 c.icon}
    end

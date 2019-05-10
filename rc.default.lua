@@ -507,7 +507,7 @@ for i = 1, 9 do
         -- View tag only.
         awful.key({ modkey, "Control" }, "#" .. i + 9,
                   function ()
-		     local tag = screen.tags[i]
+		     local tag = awful.screen.focused().tags[i]
 		     if tag then
 			tag:view_only()
 		     end
@@ -526,7 +526,8 @@ for i = 1, 9 do
 		     if focused_screen == nil then
 			return
 		     end
-		     awful.screen.focus(focused_screen.index)
+		     focused_screen.tags[i]:view_only()
+		     awful.screen.focus(focused_screen)
 		     if true then  -- the next line errors
 			for _, c in ipairs(focused_screen:get_clients()) do
 			   client.focus = c
@@ -730,6 +731,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- TODO: Save desktop list to data file: https://stackoverflow.com/questions/11201262/how-to-read-data-from-a-file-in-lua
 -- TODO: Make a key combination to shift focus but not raise (Ctrl-Alt-Tab)
 -- TODO: Make a key combination to move tags up or down, on one/all screens
+-- TODO: Thumbnails of clients:  https://www.reddit.com/r/awesomewm/comments/aofc0x/does_awesome_provide_a_thumbnail_function/ https://www.reddit.com/r/awesomewm/comments/akiqz2/any_way_to_get_a_image_preview_of_a_running_window/ http://akuederle.com/awesome_wm-widgets-1
 
 -- Refs:
 -- Keycode ref: https://stackoverflow.com/questions/10774582/what-is-the-name-of-fn-key-for-awesome-wmn `xmodmap -pke`
