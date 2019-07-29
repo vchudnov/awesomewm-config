@@ -9,7 +9,7 @@ default_tags = { "1:www", "2:lua", "3:plan", "4:gMain", "5:gWorklog", "6", "7", 
 
 local tag_file = config_dir .. "/saved.tag.txt"
 function save_tags()
-   naughty.notify({title="START saving tags", text="Here!", timeout=0})
+   -- naughty.notify({title="START saving tags", text="Here!", timeout=0})
    -- http://www.computercraft.info/forums2/index.php?/topic/10499-luahelp-how-to-save-a-table-to-file/
    local saved_tags = {}
    for s in screen do
