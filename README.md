@@ -9,3 +9,8 @@ This is my configuration for awesomewm. Various pieces have been adapted from di
 
 ### Suspending properly
 Follow the directions in `screenlock.service` so that screen locking works 
+
+### Changing display setups
+Use [arandr](https://www.mankier.com/1/arandr) to help configure your display setup with a given set of connected displays.
+
+Use [autorandr](https://manpages.debian.org/testing/autorandr/autorandr.1.en.html) to automatically switch display configurations when the connected displays change.
