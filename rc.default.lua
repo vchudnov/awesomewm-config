@@ -402,7 +402,13 @@ globalkeys = gears.table.join(
 	  awful.prompt.run {
 	     prompt       = "Run via " .. bash_cmd .. ": ",
 	     textbox      = awful.screen.focused().mypromptbox.widget,
-	     exe_callback = function(cmd) awful.spawn(in_shell(cmd)) end,
+	     exe_callback = function(cmd)
+		awful.spawn(
+		   in_shell(
+		      string.gsub(
+			 string.gsub(cmd, "\\", "\\\\"),
+			 "\"", "\\\"")))
+	     end,
 	     history_path = awful.util.get_cache_dir() .. "/history_eval"
 	  }
        end,
@@ -415,8 +421,12 @@ globalkeys = gears.table.join(
 	     textbox      = awful.screen.focused().mypromptbox.widget,
 	     exe_callback = function(cmd) awful.spawn(
 		   terminal .. " -e " ..
-		      in_shell("\"" .. cmd ..
-				  " ; read -rsp $'\\n\\e[48;5;020m\\e[38;5;255mPress any key to close...\n' -n1 key ;  \""))
+		      in_shell(
+			 "{ " ..
+			    string.gsub(
+			       string.gsub(cmd, "\\", "\\\\"),
+			       "\"", "\\\"") ..
+			    " ; read -rsp $'\\n\\e[48;5;020m\\e[38;5;255mPress any key to close...\n' -n1 key ; }"))
 	     end,
 	     history_path = awful.util.get_cache_dir() .. "/history_eval"
 	  }
