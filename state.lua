@@ -138,4 +138,4 @@ function highlight_focused_screen()
    end
 end
 
-return save_tags, restore_tags, show_all_clients, save_all_cients
+return save_tags, restore_tags, show_all_clients, restore_all_clients, save_all_cients
