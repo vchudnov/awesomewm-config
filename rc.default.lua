@@ -213,6 +213,9 @@ function connect_screen(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
+    -- Create a battery indicator widget
+    batterywidget = battery_indicator()
+
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
 
@@ -237,11 +240,13 @@ function connect_screen(s)
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
             wibox.widget.systray(),
+	    batterywidget,
             mytextclock,
             s.mylayoutbox,
         },
     }
 end
+
 
 
 awful.screen.connect_for_each_screen(connect_screen)

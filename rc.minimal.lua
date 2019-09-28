@@ -31,6 +31,7 @@ end
 awful.spawn("setxkbmap -option compose:ralt")  -- compose keys
 awful.spawn("xmodmap -e 'add mod3=Menu'") -- set Menu
 awful.spawn("xfce4-power-manager") -- https://askubuntu.com/a/951194  -- for laptop light
+awful.spawn("nm-applet")  --network manager applet
 -- TODO: Do we need to add gnome-do here?
 
 -- Handle runtime errors after startup
@@ -212,6 +213,9 @@ function connect_screen(s)
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
+    -- Create a battery indicator widget
+    batterywidget = battery_indicator()
+
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
 
@@ -236,6 +240,7 @@ function connect_screen(s)
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
             wibox.widget.systray(),
+	    batterywidget,
             mytextclock,
             s.mylayoutbox,
         },

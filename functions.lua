@@ -8,7 +8,7 @@ terminal = "x-terminal-emulator"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 screenlock_cmd = os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
-screenlock_shell = "${SCREEN_LOCK_CMD:-xsecurelock}" -- to be run via the shell 
+screenlock_shell = "${SCREEN_LOCK_CMD:-xsecurelock}" -- to be run via the shell
 bash_cmd = os.getenv("SHELL") or "/bin/bash"
 
 -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
@@ -132,4 +132,22 @@ end
 
 function screen_to_client_menu()
    awful.menu.clients({theme = { width = dpi(300) }})
+end
+
+function battery_indicator()
+   -- taken from https://askubuntu.com/a/645131
+   local batterywidget = wibox.widget.textbox()
+   batterywidget:set_text(" | Battery | ")
+   local batterywidgettimer = timer({ timeout = 5 })
+   -- TODO: Keep a list of all the battery widgets and iterate over
+   -- them from a single timer, rather than having one per widget.
+   batterywidgettimer:connect_signal("timeout",
+				     function()
+					fh = assert(io.popen("acpi | cut -d, -f 2,3 -", "r"))
+					batterywidget:set_text(" |" .. fh:read("*l") .. " | ")
+					fh:close()
+				     end
+   )
+   batterywidgettimer:start()
+   return batterywidget
 end
