@@ -7,6 +7,9 @@ This is my configuration for awesomewm. Various pieces have been adapted from di
 3. Start awesome: `awesome`. You may need to tweak this depending on where you run this.
 4. Use Super-F1 for help on the keybindings.
 
+## Locking the screen
+Look into [xsecurelock](https://github.com/google/xsecurelock) for a secuire screensaver. You'll probably want to set some environment variables (e.g. in `~/.bashrc`) to [configure](https://github.com/google/xsecurelock#options) its behavior.
+
 ### Suspending properly
 Follow the directions in `screenlock.service` so that screen locking works 
 
