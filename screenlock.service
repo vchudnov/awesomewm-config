@@ -1,4 +1,5 @@
 # systemd service file to lock screen on suspend
+# source of truth: ~/.config/awesome
 #
 # Instructions:
 #   sudo ln screenlock.service /etc/systemd/system/screenlock.service  # hard-link, not soft-link
@@ -16,6 +17,7 @@ Before=suspend-then-hibernate.target
 User=vchudnov
 Environment=DISPLAY=:0
 ExecStart=/usr/bin/xsecurelock
+ExecStartPost=sleep 1s # allow screen to lock before suspending
 
 [Install]
 WantedBy=sleep.target
