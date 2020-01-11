@@ -9,6 +9,7 @@ editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 screenlock_cmd = os.getenv("SCREEN_LOCK_CMD") or "xsecurelock"
 screenlock_shell = "${SCREEN_LOCK_CMD:-xsecurelock}" -- to be run via the shell
+detect_screens_shell = "${DETECT_SCREENS_CMD:-~/.screenlayout/detect-screens.sh}"
 bash_cmd = os.getenv("SHELL") or "/bin/bash"
 
 -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
@@ -63,6 +64,7 @@ end
 lock_screen = mk_spawn(in_shell(screenlock_shell, "Lock Screen"))
 suspend_system = mk_spawn("systemctl suspend", "Suspend")
 hybrid_sleep_system = mk_spawn("systemctl hybrid-sleep", "Hybrid Sleep")
+detect_screens = mk_spawn(in_shell(detect_screens_shell, "Detect Screens"))
 
 
 quit_with_confirm = function()
