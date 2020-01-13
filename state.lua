@@ -111,6 +111,7 @@ function restore_all_clients()
    
    for _, c in ipairs(client.get()) do
       local screen = screen_for_client(c, saved_clients, screen:count(), 1)
+      c["screen"] = screen
       table.insert(to_restore[screen], c)
    end
 
