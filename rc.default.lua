@@ -83,15 +83,15 @@ awful.layout.layouts = {
     awful.layout.suit.tile.top,
     awful.layout.suit.fair,
     awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.max,
+    awful.layout.suit.spiral, --
+    awful.layout.suit.spiral.dwindle, --
+    awful.layout.suit.max, --
     awful.layout.suit.max.fullscreen,
     awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
+    awful.layout.suit.corner.nw, --
+    awful.layout.suit.corner.ne, --
+    awful.layout.suit.corner.sw, --
+    awful.layout.suit.corner.se, --
 }
 -- }}}
 
@@ -245,6 +245,8 @@ function connect_screen(s)
             s.mylayoutbox,
         },
     }
+
+--    restore_screen_clients(s)
 end
 
 
@@ -361,7 +363,7 @@ globalkeys = gears.table.join(
     awful.key({modkey}, "w", mk_spawn("google-chrome", "Chrome"), {description = "web browser", group="launcher"}),
     awful.key({modkey}, "f", mk_spawn("thunar", "Thunar"), {description = "file browser", group="launcher"}),
 
-    awful.key({ modkey, "Control" }, "F5", awesome.restart,
+    awful.key({ modkey, "Control" }, "F5", function()  save_tags(); save_all_clients(); awesome.restart() end,
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Control", Alt , "Shift"   }, "Escape", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
@@ -767,3 +769,5 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 --   run: xev to see keypress events
 -- Compose keys: https://unix.stackexchange.com/a/39080
 -- Tips for awesomewm: https://wiki.archlinux.org/index.php/Awesome#Themes
+
+-- tag.connect_signal("request::screen", move_orphaned_clients)
