@@ -15,9 +15,17 @@ bash_cmd = os.getenv("SHELL") or "/bin/bash"
 -- https://superuser.com/questions/556877/simultaneously-switch-tags-as-one-screen-in-multi-monitor-setup
 function for_all_screens(perform)
    local current = awful.screen.focused()
+
+   -- Do the current screen last so that the window focus stays there
+   -- when changing tags. I have not been able to find a more elegant
+   -- way to achieve this.
    for i = 1, screen.count() do
-      perform(screen[i])
+      if current.index ~= i then
+	 perform(screen[i])
+      end
    end
+   perform(screen[current.index])
+   
    awful.screen.focus(current)
    highlight_focused_screen()
    -- TODO: maybe here need to find the active client on this screen and then focus that
