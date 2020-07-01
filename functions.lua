@@ -72,7 +72,7 @@ end
 lock_screen = mk_spawn(in_shell(screenlock_shell, "Lock Screen"))
 suspend_system = mk_spawn("systemctl suspend", "Suspend")
 hybrid_sleep_system = mk_spawn("systemctl hybrid-sleep", "Hybrid Sleep")
-detect_screens = mk_spawn(in_shell(detect_screens_shell, "Detect Screens"))
+detect_screens = mk_spawn(in_shell(detect_screens_shell), "Detect Screens")
 
 
 quit_with_confirm = function()
