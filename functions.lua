@@ -69,7 +69,7 @@ function in_shell(cmd)
    return bash_cmd .. " -i +O expand_aliases -c " .. quote .. cmd .. quote
 end
 
-lock_screen = mk_spawn(in_shell(screenlock_shell, "Lock Screen"))
+lock_screen = mk_spawn(in_shell(screenlock_shell), "Lock Screen")
 suspend_system = mk_spawn("systemctl suspend", "Suspend")
 hybrid_sleep_system = mk_spawn("systemctl hybrid-sleep", "Hybrid Sleep")
 detect_screens = mk_spawn(in_shell(detect_screens_shell), "Detect Screens")
