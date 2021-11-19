@@ -461,6 +461,7 @@ globalkeys = gears.table.join(
 
     -- System
     awful.key({ modkey },      "F5", detect_screens, {description = "detect screens", group = "system"}),
+    awful.key({ modkey, "Shift" }, "F5", laptop_screen, {description = "laptop screen only", group = "system"}),
     awful.key({ modkey },      "Scroll_Lock", lock_screen, {description = "lock screen", group = "system"}),
     awful.key({ modkey, Alt }, "l", lock_screen, {description = "lock screen", group = "system"}),
     -- awful.key({ modkey, "Control" }, "Scroll_Lock", mk_spawn("xscreensaver-demo -prefs", "Lock screen preferences"),       {description = "screen lock settings", group = "system"}),
